@@ -4,5 +4,9 @@
 % 
 %*******************************************
 
-d=Normalized();
-print(d);
+%% normalized The data Sets
+data =Normalized();
+
+%% Get Ready to Use
+dataSet = makeDataSets( data );
+
