@@ -11,29 +11,30 @@ data =Normalized();
 dataSet = makeDataSets( data );
 dataSet = dataSet ( randperm(end),: );
 
-usedDataSets = dataSet(1:112 , :);
-testDataSets = dataSet(113:142 , :);
+usedDataSets = dataSet(1:108 , :);
+testDataSets = dataSet(109:129 , :);
 
 
 %% Initialized weights and other parameters
-numberOfEpoch = 200;
+numberOfEpoch = 1200;
 
-hiddenNeruns = 25;
+hiddenNeruns = 6;
+inputSize =9;
 rand('state',7);
 
-W1 = rand(77 , hiddenNeruns);
+W1 = rand(inputSize , hiddenNeruns);
 W2 = rand(hiddenNeruns ,1  );
 W1b = rand(1, hiddenNeruns );
 W2b = rand(1,1 );
 G1 = rand( 1,hiddenNeruns)*2 -1;
 
-eta = 0.02;
+eta = 0.2;
 gamma = 0.01;
-eta1(1:77,1:hiddenNeruns) = 0.02;
-eta2(1:hiddenNeruns,1:1) = 0.02;
-eta1b(1:1,1:hiddenNeruns) = 0.02;
-eta2b(1:1,1:1) = 0.02;
-etaG(1:hiddenNeruns) = 0.02;
+eta1(1:inputSize,1:hiddenNeruns) = 0.2;
+eta2(1:hiddenNeruns,1:1) = 0.2;
+eta1b(1:1,1:hiddenNeruns) = 0.2;
+eta2b(1:1,1:1) = 0.2;
+etaG(1:hiddenNeruns) = 0.2;
 
 delta2 =0;
 delta1(1:1 , 1:hiddenNeruns) =0;
@@ -44,18 +45,18 @@ delta1(1:1 , 1:hiddenNeruns) =0;
 for i = 1: numberOfEpoch
    %% make train and eval data
    usedDataSets = usedDataSets(randperm(end),:);
-   trainDataSets = usedDataSets(1:112 , :);
-   evalDataSets = usedDataSets(90:112 , :);
+   trainDataSets = usedDataSets(1:108 , :);
+   evalDataSets = usedDataSets(90:108 , :);
    
    %% Satrt each Epoch
    e=0;
    eval_error=0;
-   for j=1 : 112
+   for j=1 : 100
        % ********************************
        % define input and output
        %*********************************
-       input = trainDataSets(j , 1:77 );
-       output = trainDataSets (j , 78);
+       input = trainDataSets(j , 1:inputSize );
+       output = trainDataSets (j , inputSize+1);
        
        %% Learning with Train data
        %*********************************
@@ -96,12 +97,12 @@ for i = 1: numberOfEpoch
       % G1 = G1 + etaG * sigma1;
        
        %*******< Train eta >************
-       for k = 1: 16
-            for m=1: 20 
+       for k = 1: inputSize
+            for m=1: hiddenNeruns 
                 eta1(k,m )= eta1(k,m) - gamma *((input(1,k)*delta1(1,m))*(input(1,k)*delta1Before(1,m)));
             end
        end
-       for k = 1: 20
+       for k = 1: hiddenNeruns
             for m=1: 1 
                 eta2(k,m )= eta2(k,m) - gamma *((O1(1,k)*delta2(1,m))*(O1(1,k)*delta2Before(1,m)));
             end
@@ -116,12 +117,12 @@ for i = 1: numberOfEpoch
    
    
    %% Eval Trainig
-   for j =1 : 22
+   for j =1 : 18
     % ********************************
     % define input and output
     %*********************************
-    input = evalDataSets(j , 1:77 );
-    output = evalDataSets (j , 78);
+    input = evalDataSets(j , 1:inputSize );
+    output = evalDataSets (j , inputSize+1);
     
     %**********************
     % EvalFeedForward
@@ -146,12 +147,12 @@ end
 
 
 %% Test
-for( j =1 : 30  )
+for j =1 : 20  
     % ********************************
     % define input and output
     %*********************************
-       input = testDataSets(j , 1:77 );
-       output = testDataSets(j , 78);
+       input = testDataSets(j , 1:inputSize );
+       output = testDataSets(j , inputSize+1);
        
     %*********************************
     % TestFeedForward
@@ -177,11 +178,11 @@ end
    %*********************************
 
 figure
-plot(1:112 , e);
+plot(1:100 , e);
 figure
 plot (1:i ,eva);
 figure
-plot (1:30 ,test_error);
+plot (1:20 ,test_error);
 figure
-plot(1:30 ,test_target , 1:30 , test_output);
+plot(1:20 ,test_target , 1:20 , test_output);
 

@@ -4,13 +4,16 @@
 
 function [result  ] = makeDataSets( dataSet )
     index=1;
-    for k =1:142
-        for l =0 : 6
-           for m =1 :11
-               data(index , (m+(l*11))  ) = dataSet(k+l ,m );
-           end
+    for k =1:129
+        for l =0 : 2
+           %for m =1 :11
+                m =1;
+               data(index , (m+(l*3))  ) = dataSet(k+l ,m );
+               data(index , (m+1+(l*3))  ) = dataSet(k+l ,m+3 );
+               data(index , (m+2+(l*3))  ) = dataSet(k+l ,m+7 );
+           %end
         end
-        data(index , 78) = dataSet(k+7 , 4);
+        data(index , 10) = dataSet(k+3 , 4);
         index = index+1;
     end
     
