@@ -20,7 +20,7 @@ numberOfEpoch = 1000;
 
 hiddenNeruns = 6;
 inputSize =9;
-rand('state',5);
+rand('state',7);
 
 etha1 = 0.2;
 etha2 = 0.2;
