@@ -16,14 +16,16 @@ testDataSets = dataSet(109:129 , :);
 
 
 %% Initialized weights and other parameters
-numberOfEpoch = 1200;
+numberOfEpoch = 2000;
 
 hiddenNeruns = 6;
 inputSize =9;
 rand('state',7);
 
+Xc = 0.5;
 W1 = rand(inputSize , hiddenNeruns);
 W2 = rand(hiddenNeruns ,1  );
+Wc = rand(1,1);
 W1b = rand(1, hiddenNeruns );
 W2b = rand(1,1 );
 G1 = rand( 1,hiddenNeruns)*2 -1;
@@ -62,10 +64,11 @@ for i = 1: numberOfEpoch
        %*********************************
        % FeedForward
        %*********************************
-       net1 = input * W1 + W1b;
+       net1 = input * W1 + Wc * Xc + W1b;
        O1 = logsig(net1);%BipolarSigmoid(net1 , G1);
        net2 = O1 * W2 + W2b ;
        O2 = purelin( net2);
+       Xc = O1;
        
        error = output - O2;
        
@@ -85,6 +88,8 @@ for i = 1: numberOfEpoch
        %*********< Train W >************
        W1 = W1 + eta1 .*( input' * delta1);
        W2 = W2 + eta2 * delta1 * O1';
+       ss = delta1 .*(O1 + Wc*Xc.*dlogsig(net1 , O1) );
+       Wc = Wc + eta2' * ss';
        
        %********<Train bias >***********
        W1b = W1b + eta1b .* delta1;
@@ -127,7 +132,7 @@ for i = 1: numberOfEpoch
     %**********************
     % EvalFeedForward
     %**********************
-    net1 = input * W1 + W1b;
+    net1 = input * W1 + Wc * Xc + W1b;
     O1 = logsig(net1);%BipolarSigmoid(net1 , G1);
     net2 = O1 * W2 + W2b ;
     O2 = purelin( net2);
@@ -157,7 +162,7 @@ for j =1 : 20
     %*********************************
     % TestFeedForward
     %*********************************  
-       net1 = input * W1 + W1b;
+       net1 = input * W1 + Wc * Xc + W1b;
        O1 = logsig(net1);%BipolarSigmoid(net1 , G1);
        net2 = O1 * W2 + W2b ;
        O2 = purelin( net2);
